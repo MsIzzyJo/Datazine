@@ -1,261 +1,615 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>SQL Showcase</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Query Showcase</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .section-header {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .query-card {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .query-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .query-title {
+            color: #333;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .query-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+        
+        .code-block code {
+            white-space: pre;
+        }
+        
+        .result-box {
+            background: #e6ffed;
+            border: 2px solid #52c41a;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .result-label {
+            font-weight: 600;
+            color: #237804;
+            margin-bottom: 8px;
+        }
+        
+        .result-value {
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        .screenshot-container {
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border: 1px solid #e0e0e0;
+        }
+        
+        .screenshot-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .screenshot-label {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: white;
+            color: #667eea;
+            border: 2px solid white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .keyword {
+            color: #c678dd;
+        }
+        
+        .function {
+            color: #61afef;
+        }
+        
+        .string {
+            color: #98c379;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>SQL Business Questions Showcase</h1>
-
-  <h2>1. How many unique countries are there?</h2>
-  <pre><code>SELECT COUNT(DISTINCT CountryName)
-FROM PopStats;
-  </code></pre>
-
-  <h2>2. How many unique cities are there?</h2>
-  <pre><code>SELECT COUNT(DISTINCT City)
-FROM FansPerCity;
-  </code></pre>
-
-  <h2>3. How many unique languages are there?</h2>
-  <pre><code>SELECT COUNT(DISTINCT Language)
-FROM FansPerLanguage;
-  </code></pre>
-
-  <h2>4. What is the daily average reach of the posts on the global page?</h2>
-  <pre><code>SELECT AVG(DailyPostReach)
-FROM GlobalPage;
-  </code></pre>
-
-  <h2>5. What is the daily average engagement rate (NewLikes) on the global page?</h2>
-  <pre><code>SELECT
-  ROUND(AVG(NewLikes), 2) AS AvgNewLikes
-FROM GlobalPage;
-  </code></pre>
-
-  <h2>6. What are the top 10 countries considering the number of fans?</h2>
-  <pre><code>SELECT
-  f.CountryCode,
-  p.CountryName,
-  f.NumberOfFans
-FROM FansPerCountry AS f
-LEFT JOIN PopStats AS p
-  ON f.CountryCode = p.CountryCode
-WHERE f.DateISO = (SELECT MAX(DateISO) FROM FansPerCountry)
-ORDER BY f.NumberOfFans DESC
-LIMIT 10;
-  </code></pre>
-
-  <h2>7. What are the top 10 countries by penetration ratio (% of population that are fans)?</h2>
-  <pre><code>SELECT
-  p.CountryName,
-  ROUND(
-    100.0 * f.NumberOfFans / p.Population,
-    2
-  ) AS PenetrationRatio,
-  f.NumberOfFans,
-  p.Population
-FROM FansPerCountry AS f
-JOIN PopStats AS p
-  ON f.CountryCode = p.CountryCode
-WHERE f.DateISO = (SELECT MAX(DateISO) FROM FansPerCountry)
-ORDER BY PenetrationRatio DESC
-LIMIT 10;
-  </code></pre>
-
-  <h2>8. Bottom 10 cities by fans among countries with population over 20 million</h2>
-  <pre><code>SELECT
-  p.CountryName,
-  c.City,
-  c.NumberOfFans,
-  p.Population
-FROM FansPerCity AS c
-JOIN PopStats AS p
-  ON c.CountryCode = p.CountryCode
-WHERE c.DateISO = (SELECT MAX(DateISO) FROM FansPerCity)
-  AND p.Population &gt; 20000000
-ORDER BY c.NumberOfFans ASC
-LIMIT 10;
-  </code></pre>
-
-  <h2>9. What is the split of page fans across age groups (in %)?</h2>
-  <pre><code>WITH Latest AS (
-  SELECT *
-  FROM FansPerGenderAge
-  WHERE Date = (SELECT MAX(Date) FROM FansPerGenderAge)
+    <script>
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+    </script>
+    <div class="container">
+        <header>
+            <h1>📊 SQL Query Showcase</h1>
+            <p class="subtitle">Business Analytics & Data Insights</p>
+        </header>
+        
+        <div class="nav-buttons">
+            <button class="nav-btn" onclick="scrollToSection('section1')">Basic Stats</button>
+            <button class="nav-btn" onclick="scrollToSection('section2')">Location Analysis</button>
+            <button class="nav-btn" onclick="scrollToSection('section3')">Fan Analysis</button>
+            <button class="nav-btn" onclick="scrollToSection('section4')">Language Analysis</button>
+            <button class="nav-btn" onclick="scrollToSection('section5')">Engagement</button>
+            <button class="nav-btn" onclick="scrollToSection('section6')">Advanced</button>
+        </div>
+        
+        <!-- Section 1 -->
+        <div class="section" id="section1">
+            <h2 class="section-header">Section 1: Basic Summary Statistics</h2>
+            
+            <div class="query-card">
+                <h3 class="query-title">Q1: Unique Countries</h3>
+                <p class="query-description">How many unique countries are there?</p>
+                <div class="code-block"><code><span class="keyword">SELECT</span> <span class="function">COUNT</span>(<span class="keyword">DISTINCT</span> CountryName)
+<span class="keyword">FROM</span> PopStats;</code></div>
+                <div class="result-box">
+                    <div class="result-label">Result:</div>
+                    <div class="result-value">150 unique countries</div>
+                </div>
+                <div class="screenshot-container">
+                    <div class="screenshot-label">📸 Question 1 - SQLiteStudio Screenshot</div>
+                    <img src="images/image1.png" alt="Q1 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image1.png in the images folder</div>'">
+                </div>
+            </div>
+            
+            <div class="query-card">
+                <h3 class="query-title">Q2: Unique Cities</h3>
+                <p class="query-description">How many unique cities are there?</p>
+                <div class="code-block"><code><span class="keyword">SELECT</span> <span class="function">COUNT</span>(<span class="keyword">DISTINCT</span> City)
+<span class="keyword">FROM</span> FansPerCity;</code></div>
+                <div class="result-box">
+                    <div class="result-label">Result:</div>
+                    <div class="result-value">46 unique cities</div>
+                </div>
+                <div class="screenshot-container">
+                    <div class="screenshot-label">📸 Question 2 - SQLiteStudio Screenshot</div>
+                    <img src="images/image2.png" alt="Q2 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image2.png in the images folder</div>'">
+                </div>
+            </div>
+            
+            <div class="query-card">
+                <h3 class="query-title">Q3: Unique Languages</h3>
+                <p class="query-description">How many unique languages are there?</p>
+                <div class="code-block"><code><span class="keyword">SELECT</span> <span class="function">COUNT</span>(<span class="keyword">DISTINCT</span> Language)
+<span class="keyword">FROM</span> FansPerLanguage;</code></div>
+                <div class="result-box">
+                    <div class="result-label">Result:</div>
+                    <div class="result-value">41 unique languages</div>
+                </div>
+                <div class="screenshot-container">
+                    <div class="screenshot-label">📸 Question 3 - SQLiteStudio Screenshot</div>
+                    <img src="images/image3.png" alt="Q3 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image3.png in the images folder</div>'">
+                </div>
+            </div>
+            
+            <div class="query-card">
+                <h3 class="query-title">Q4: Global Page Reach</h3>
+                <p class="query-description">What is the daily average reach of the posts on the global page?</p>
+                <div class="code-block"><code><span class="keyword">SELECT</span> <span class="function">AVG</span>(DailyPostReach)
+<span class="keyword">FROM</span> GlobalPage;</code></div>
+                <div class="result-box">
+                    <div class="result-label">Result:</div>
+                    <div class="result-value">1,862,816.03 average daily reach</div>
+                </div>
+                <div class="screenshot-container">
+                    <div class="screenshot-label">📸 Question 4 - SQLiteStudio Screenshot</div>
+                    <img src="images/image4.png" alt="Q4 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image4.png in the images folder</div>'">
+                </div>
+            </div>
+            
+            <div class="query-card">
+                <h3 class="query-title">Q5: Global Page Likes</h3>
+                <p class="query-description">What is the daily average engagement rate (NewLikes) on the global page?</p>
+                <div class="code-block"><code><span class="keyword">SELECT</span> <span class="function">AVG</span>(NewLikes)
+<span class="keyword">FROM</span> GlobalPage;</code></div>
+                <div class="result-box">
+                    <div class="result-label">Result:</div>
+                    <div class="result-value">8,942.56 average new likes per day</div>
+                </div>
+                <div class="screenshot-container">
+                    <div class="screenshot-label">📸 Question 5 - SQLiteStudio Screenshot</div>
+                    <img src="images/image5.png" alt="Q5 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image5.png in the images folder</div>'">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 2 -->
+        <div class="section" id="section2">
+            <h2 class="section-header">Section 2: Location Analysis</h2>
+            
+            <div class="query-card">
+                <h3 class="query-title">Q6: Top 10 Countries by Number of Fans</h3>
+                <p class="query-description">What are the top 10 countries considering the number of fans?</p>
+                <div class="code-block"><code><span class="keyword">SELECT</span> f.CountryCode,
+       p.CountryName,
+       f.NumberOfFans
+<span class="keyword">FROM</span> FansPerCountry f
+<span class="keyword">LEFT JOIN</span> PopStats p
+    <span class="keyword">ON</span> f.CountryCode = p.CountryCode
+<span class="keyword">WHERE</span> f.Date = (<span class="keyword">SELECT</span> <span class="function">MAX</span>(Date) <span class="keyword">FROM</span> FansPerCountry)
+<span class="keyword">ORDER BY</span> f.NumberOfFans <span class="keyword">DESC</span>
+<span class="keyword">LIMIT</span> 10;</code></div>
+                <div class="result-box">
+                    <div class="result-label">Result:</div>
+                    <div class="result-value">Returns top 10 countries with CountryCode, CountryName, and NumberOfFans</div>
+                </div>
+                <div class="screenshot-container">
+                    <div class="screenshot-label">📸 Question 6 - SQLiteStudio Screenshot</div>
+                    <img src="images/image6.png" alt="Q6 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image6.png in the images folder</div>'">
+                </div>
+            </div>
+            
+            <div class="query-card">
+                <h3 class="query-title">Q7: Top 10 Countries by Penetration Ratio</h3>
+                <p class="query-description">What are the top 10 countries by penetration ratio (% of population that are fans)?</p>
+                <div class="code-block"><code><span class="keyword">SELECT</span> p.CountryName,
+       1.0 * f.NumberOfFans / p.Population <span class="keyword">AS</span> PenetrationRatio,
+       f.NumberOfFans,
+       p.Population
+<span class="keyword">FROM</span> FansPerCountry f
+<span class="keyword">JOIN</span> PopStats p
+    <span class="keyword">ON</span> f.CountryCode = p.CountryCode
+<span class="keyword">WHERE</span> f.Date = (<span class="keyword">SELECT</span> <span class="function">MAX</span>(Date) <span class="keyword">FROM</span> FansPerCountry)
+<span class="keyword">ORDER BY</span> PenetrationRatio <span class="keyword">DESC</span>
+<span class="keyword">LIMIT</span> 10;</code></div>
+                <div class="result-box">
+                    <div class="result-label">Result:</div>
+                    <div class="result-value">Top 10 countries by fan penetration percentage</div>
+                </div>
+                <div class="screenshot-container">
+                    <div class="screenshot-label">📸 Question 7 - SQLiteStudio Screenshot</div>
+                    <img src="images/image7.png" alt="Q7 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image7.png in the images folder</div>'">
+                </div>
+            </div>
+            
+            <div class="query-card">
+                <h3 class="query-title">Q8: Bottom 10 Cities by Fans (Growth Potential)</h3>
+                <p class="query-description">Bottom 10 cities by fans among countries with population over 20 million</p>
+                <div class="code-block"><code><span class="keyword">SELECT</span> p.CountryName,
+       c.City,
+       c.NumberOfFans,
+       p.Population
+<span class="keyword">FROM</span> FansPerCity c
+<span class="keyword">JOIN</span> PopStats p
+    <span class="keyword">ON</span> c.CountryCode = p.CountryCode
+<span class="keyword">WHERE</span> c.Date = (<span class="keyword">SELECT</span> <span class="function">MAX</span>(Date) <span class="keyword">FROM</span> FansPerCity)
+    <span class="keyword">AND</span> p.Population > 20000000
+<span class="keyword">ORDER BY</span> c.NumberOfFans <span class="keyword">ASC</span>
+<span class="keyword">LIMIT</span> 10;</code></div>
+                <div class="result-box">
+                    <div class="result-label">Result:</div>
+                    <div class="result-value">Cities with lowest fan counts in large countries (growth opportunities)</div>
+                </div>
+                <div class="screenshot-container">
+                    <div class="screenshot-label">📸 Question 8 - SQLiteStudio Screenshot</div>
+                    <img src="images/image8.png" alt="Q8 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image8.png in the images folder</div>'">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 3 -->
+        <div class="section" id="section3">
+            <h2 class="section-header">Section 3: Fan Analysis</h2>
+            
+            <div class="query-card">
+                <h3 class="query-title">Q9: Analysis by Age Group</h3>
+                <p class="query-description">What is the split of page fans across age groups (in %)?</p>
+                <div class="code-block"><code><span class="keyword">WITH</span> Latest <span class="keyword">AS</span> (
+    <span class="keyword">SELECT</span> *
+    <span class="keyword">FROM</span> FansPerGenderAge
+    <span class="keyword">WHERE</span> Date = (<span class="keyword">SELECT</span> <span class="function">MAX</span>(Date) <span class="keyword">FROM</span> FansPerGenderAge)
 )
-SELECT
-  AgeGroup,
-  ROUND(
-    100.0 * SUM(NumberOfFans) /
-    (SELECT SUM(NumberOfFans) FROM Latest),
-    2
-  ) AS PercentageOfFans
-FROM Latest
-GROUP BY AgeGroup
-ORDER BY AgeGroup;
-  </code></pre>
-
-  <h2>10. What is the split of page fans by gender (in %)?</h2>
-  <pre><code>WITH Latest AS (
-  SELECT *
-  FROM FansPerGenderAge
-  WHERE DateISO = (SELECT MAX(DateISO) FROM FansPerGenderAge)
+<span class="keyword">SELECT</span> AgeGroup,
+       100.0 * <span class="function">SUM</span>(NumberOfFans) / 
+           (<span class="keyword">SELECT</span> <span class="function">SUM</span>(NumberOfFans) <span class="keyword">FROM</span> Latest) <span class="keyword">AS</span> PercentageOfFans
+<span class="keyword">FROM</span> Latest
+<span class="keyword">GROUP BY</span> AgeGroup
+<span class="keyword">ORDER BY</span> AgeGroup;</code></div>
+                <div class="result-box">
+                    <div class="result-label">Result:</div>
+                    <div class="result-value">Percentage distribution of fans across different age groups</div>
+                </div>
+                <div class="screenshot-container">
+                    <div class="screenshot-label">📸 Question 9 - SQLiteStudio Screenshot</div>
+                    <img src="images/image9.png" alt="Q9 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image9.png in the images folder</div>'">
+                </div>
+            </div>
+            
+            <div class="query-card">
+                <h3 class="query-title">Q10: Analysis by Gender</h3>
+                <p class="query-description">What is the split of page fans by gender (in %)?</p>
+                <div class="code-block"><code><span class="keyword">WITH</span> Latest <span class="keyword">AS</span> (
+    <span class="keyword">SELECT</span> *
+    <span class="keyword">FROM</span> FansPerGenderAge
+    <span class="keyword">WHERE</span> Date = (<span class="keyword">SELECT</span> <span class="function">MAX</span>(Date) <span class="keyword">FROM</span> FansPerGenderAge)
 )
-SELECT
-  Gender,
-  FORMAT(
-    '%0.2f%%',
-    100.0 * SUM(NumberOfFans) /
-    (SELECT SUM(NumberOfFans) FROM Latest)
-  ) AS PercentageOfFans
-FROM Latest
-GROUP BY Gender
-ORDER BY Gender;
-  </code></pre>
-
-  <h2>11. Number of fans with English as primary language</h2>
-  <pre><code>SELECT SUM(NumberOfFans) AS EnglishSpeakingFans
-FROM FansPerLanguage
-WHERE Language = 'en'
-  AND DateISO = (SELECT MAX(DateISO) FROM FansPerLanguage);
-  </code></pre>
-
-  <h2>12. Percentage of fans with English as primary language</h2>
-  <pre><code>WITH Latest AS (
-  SELECT *
-  FROM FansPerLanguage
-  WHERE DateISO = (SELECT MAX(DateISO) FROM FansPerLanguage)
+<span class="keyword">SELECT</span> Gender,
+       100.0 * <span class="function">SUM</span>(NumberOfFans) / 
+           (<span class="keyword">SELECT</span> <span class="function">SUM</span>(NumberOfFans) <span class="keyword">FROM</span> Latest) <span class="keyword">AS</span> PercentageOfFans
+<span class="keyword">FROM</span> Latest
+<span class="keyword">GROUP BY</span> Gender
+<span class="keyword">ORDER BY</span> Gender;</code></div>
+                <div class="result-box">
+                    <div class="result-label">Result:</div>
+                    <div class="result-value">Percentage distribution of fans by gender</div>
+                </div>
+                <div class="screenshot-container">
+                    <div class="screenshot-label">📸 Question 10 - SQLiteStudio Screenshot</div>
+                    <img src="images/image10.png" alt="Q10 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image10.png in the images folder</div>'">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 4 -->
+        <div class="section" id="section4">
+            <h2 class="section-header">Section 4: Language Analysis</h2>
+            
+            <div class="query-card">
+                <h3 class="query-title">Q11: English Speaking Fans</h3>
+                <p class="query-description">Number of fans with English as primary language</p>
+                <div class="code-block"><code><span class="keyword">SELECT</span> <span class="function">SUM</span>(NumberOfFans) <span class="keyword">AS</span> EnglishSpeakingFans
+<span class="keyword">FROM</span> FansPerLanguage
+<span class="keyword">WHERE</span> Language = <span class="string">'en'</span>
+    <span class="keyword">AND</span> Date = (<span class="keyword">SELECT</span> <span class="function">MAX</span>(Date) <span class="keyword">FROM</span> FansPerLanguage);</code></div>
+                <div class="result-box">
+                    <div class="result-label">Result:</div>
+                    <div class="result-value">Total number of English-speaking fans</div>
+                </div>
+                <div class="screenshot-container">
+                    <div class="screenshot-label">📸 Question 11 - SQLiteStudio Screenshot</div>
+                    <img src="images/image11.png" alt="Q11 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image11.png in the images folder</div>'">
+                </div>
+            </div>
+            
+            <div class="query-card">
+                <h3 class="query-title">Q12: English Speaking Fans Percentage</h3>
+                <p class="query-description">Percentage of fans with English as primary language</p>
+                <div class="code-block"><code><span class="keyword">WITH</span> Latest <span class="keyword">AS</span> (
+    <span class="keyword">SELECT</span> *
+    <span class="keyword">FROM</span> FansPerLanguage
+    <span class="keyword">WHERE</span> Date = (<span class="keyword">SELECT</span> <span class="function">MAX</span>(Date) <span class="keyword">FROM</span> FansPerLanguage)
 )
-SELECT
-  SUM(CASE WHEN Language = 'en' THEN NumberOfFans END) AS EnglishFans,
-  FORMAT(
-    '%.2f%%',
-    100.0 * SUM(CASE WHEN Language = 'en' THEN NumberOfFans END)
-    / SUM(NumberOfFans)
-  ) AS EnglishFansPercentage
-FROM Latest;
-  </code></pre>
-
-  <h2>13. Potential buying power based on US English-speaking fans (0.01% of income for subscriptions)</h2>
-  <pre><code>WITH Latest AS (
-  SELECT *
-  FROM FansPerLanguage
-  WHERE DateISO = (SELECT MAX(DateISO) FROM FansPerLanguage)
+<span class="keyword">SELECT</span>
+    <span class="function">SUM</span>(<span class="keyword">CASE WHEN</span> Language = <span class="string">'en'</span> <span class="keyword">THEN</span> NumberOfFans <span class="keyword">END</span>) <span class="keyword">AS</span> EnglishFans,
+    100.0 * <span class="function">SUM</span>(<span class="keyword">CASE WHEN</span> Language = <span class="string">'en'</span> <span class="keyword">THEN</span> NumberOfFans <span class="keyword">END</span>)
+        / <span class="function">SUM</span>(NumberOfFans) <span class="keyword">AS</span> EnglishFansPercentage
+<span class="keyword">FROM</span> Latest;</code></div>
+                <div class="result-box">
+                    <div class="result-label">Result:</div>
+                    <div class="result-value">Percentage of total fans who speak English</div>
+                </div>
+                <div class="screenshot-container">
+                    <div class="screenshot-label">📸 Question 12 - SQLiteStudio Screenshot</div>
+                    <img src="images/image12.png" alt="Q12 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image12.png in the images folder</div>'">
+                </div>
+            </div>
+            
+            <div class="query-card">
+                <h3 class="query-title">Q13: Buying Power of English Speakers in US</h3>
+                <p class="query-description">Potential buying power based on US English-speaking fans (0.01% of income for subscriptions)</p>
+                <div class="code-block"><code><span class="keyword">WITH</span> Latest <span class="keyword">AS</span> (
+    <span class="keyword">SELECT</span> *
+    <span class="keyword">FROM</span> FansPerLanguage
+    <span class="keyword">WHERE</span> Date = (<span class="keyword">SELECT</span> <span class="function">MAX</span>(Date) <span class="keyword">FROM</span> FansPerLanguage)
 )
-SELECT
-  SUM(
-    CASE
-      WHEN l.Language = 'en' AND l.CountryCode = 'US'
-      THEN l.NumberOfFans
-    END
-  ) AS EnglishFansUS,
-  p.AverageIncome,
-  ROUND(
-    SUM(
-      CASE
-        WHEN l.Language = 'en' AND l.CountryCode = 'US'
-        THEN l.NumberOfFans
-      END
-    ) * p.AverageIncome * 0.0001,
-    2
-  ) AS PotentialBuyingPower
-FROM Latest AS l
-JOIN PopStats AS p
-  ON p.CountryCode = 'US';
-  </code></pre>
-
-  <h2>14. Split of EngagedFans across days of the week - Best day to publish?</h2>
-  <pre><code>WITH Base AS (
-  SELECT
-    strftime('%w', CreatedTime) AS WeekdayNum,
+<span class="keyword">SELECT</span>
+    <span class="function">SUM</span>(<span class="keyword">CASE</span>
+        <span class="keyword">WHEN</span> l.Language = <span class="string">'en'</span> <span class="keyword">AND</span> l.CountryCode = <span class="string">'US'</span>
+        <span class="keyword">THEN</span> l.NumberOfFans
+    <span class="keyword">END</span>) <span class="keyword">AS</span> EnglishFansUS,
+    p.AverageIncome,
+    <span class="function">SUM</span>(<span class="keyword">CASE</span>
+        <span class="keyword">WHEN</span> l.Language = <span class="string">'en'</span> <span class="keyword">AND</span> l.CountryCode = <span class="string">'US'</span>
+        <span class="keyword">THEN</span> l.NumberOfFans
+    <span class="keyword">END</span>) * p.AverageIncome * 0.0001 <span class="keyword">AS</span> PotentialBuyingPower
+<span class="keyword">FROM</span> Latest <span class="keyword">AS</span> l
+<span class="keyword">JOIN</span> PopStats <span class="keyword">AS</span> p
+    <span class="keyword">ON</span> p.CountryCode = <span class="string">'US'</span>;</code></div>
+                <div class="result-box">
+                    <div class="result-label">Result:</div>
+                    <div class="result-value">Estimated buying power for magazine subscriptions</div>
+                </div>
+                <div class="screenshot-container">
+                    <div class="screenshot-label">📸 Question 13 - SQLiteStudio Screenshot</div>
+                    <img src="images/image13.png" alt="Q13 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image13.png in the images folder</div>'">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 5 -->
+        <div class="section" id="section5">
+            <h2 class="section-header">Section 5: Fan Engagement</h2>
+            
+            <div class="query-card">
+                <h3 class="query-title">Q14: Engagement per Day of Week</h3>
+                <p class="query-description">Split of EngagedFans across days of the week - Best day to publish?</p>
+                <div class="code-block"><code><span class="keyword">WITH</span> Base <span class="keyword">AS</span> (
+    <span class="keyword">SELECT</span> <span class="function">strftime</span>(<span class="string">'%w'</span>, CreatedTime) <span class="keyword">AS</span> WeekdayNum,
+           EngagedFans
+    <span class="keyword">FROM</span> PostInsights
+)
+<span class="keyword">SELECT</span> <span class="keyword">CASE</span> WeekdayNum
+    <span class="keyword">WHEN</span> <span class="string">'0'</span> <span class="keyword">THEN</span> <span class="string">'Sunday'</span>
+    <span class="keyword">WHEN</span> <span class="string">'1'</span> <span class="keyword">THEN</span> <span class="string">'Monday'</span>
+    <span class="keyword">WHEN</span> <span class="string">'2'</span> <span class="keyword">THEN</span> <span class="string">'Tuesday'</span>
+    <span class="keyword">WHEN</span> <span class="string">'3'</span> <span class="keyword">THEN</span> <span class="string">'Wednesday'</span>
+    <span class="keyword">WHEN</span> <span class="string">'4'</span> <span class="keyword">THEN</span> <span class="string">'Thursday'</span>
+    <span class="keyword">WHEN</span> <span class="string">'5'</span> <span class="keyword">THEN</span> <span class="string">'Friday'</span>
+    <span class="keyword">WHEN</span> <span class="string">'6'</span> <span class="keyword">THEN</span> <span class="string">'Saturday'</span>
+<span class="keyword">END AS</span> DayOfWeek,
+100.0 * <span class="function">SUM</span>(EngagedFans) / 
+    (<span class="keyword">SELECT</span> <span class="function">SUM</span>(EngagedFans) <span class="keyword">FROM</span> Base) <span class="keyword">AS</span> PercentageSplit
+<span class="keyword">FROM</span> Base
+<span class="keyword">GROUP BY</span> WeekdayNum
+<span class="keyword">ORDER BY</span> WeekdayNum;</code></div>
+                <div class="result-box">
+                    <div class="result-label">Result:</div>
+                    <div class="result-value">Engagement percentage by day of week</div>
+                </div>
+                <div class="screenshot-container">
+                    <div class="screenshot-label">📸 Question 14 - SQLiteStudio Screenshot</div>
+                    <img src="images/image14.png" alt="Q14 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image14.png in the images folder</div>'">
+                </div>
+            </div>
+            
+            <div class="query-card">
+                <h3 class="query-title">Q15: Engagement per Time of Day</h3>
+                <p class="query-description">Split of EngagedFans by time ranges - Best time to publish?</p>
+                <div class="code-block"><code><span class="keyword">WITH</span> B <span class="keyword">AS</span> (
+    <span class="keyword">SELECT</span> <span class="keyword">CASE</span>
+        <span class="keyword">WHEN</span> <span class="function">time</span>(CreatedTime) <span class="keyword">BETWEEN</span> <span class="string">'05:00:00'</span> <span class="keyword">AND</span> <span class="string">'08:59:59'</span> 
+            <span class="keyword">THEN</span> <span class="string">'05:00 - 08:59'</span>
+        <span class="keyword">WHEN</span> <span class="function">time</span>(CreatedTime) <span class="keyword">BETWEEN</span> <span class="string">'09:00:00'</span> <span class="keyword">AND</span> <span class="string">'11:59:59'</span> 
+            <span class="keyword">THEN</span> <span class="string">'09:00 - 11:59'</span>
+        <span class="keyword">WHEN</span> <span class="function">time</span>(CreatedTime) <span class="keyword">BETWEEN</span> <span class="string">'12:00:00'</span> <span class="keyword">AND</span> <span class="string">'14:59:59'</span> 
+            <span class="keyword">THEN</span> <span class="string">'12:00 - 14:59'</span>
+        <span class="keyword">WHEN</span> <span class="function">time</span>(CreatedTime) <span class="keyword">BETWEEN</span> <span class="string">'15:00:00'</span> <span class="keyword">AND</span> <span class="string">'18:59:59'</span> 
+            <span class="keyword">THEN</span> <span class="string">'15:00 - 18:59'</span>
+        <span class="keyword">WHEN</span> <span class="function">time</span>(CreatedTime) <span class="keyword">BETWEEN</span> <span class="string">'19:00:00'</span> <span class="keyword">AND</span> <span class="string">'21:59:59'</span> 
+            <span class="keyword">THEN</span> <span class="string">'19:00 - 21:59'</span>
+        <span class="keyword">ELSE</span> <span class="string">'22:00 or later'</span>
+    <span class="keyword">END AS</span> TimeRange,
     EngagedFans
-  FROM PostInsights
+    <span class="keyword">FROM</span> PostInsights
 )
-SELECT
-  CASE WeekdayNum
-    WHEN '0' THEN 'Sunday'
-    WHEN '1' THEN 'Monday'
-    WHEN '2' THEN 'Tuesday'
-    WHEN '3' THEN 'Wednesday'
-    WHEN '4' THEN 'Thursday'
-    WHEN '5' THEN 'Friday'
-    WHEN '6' THEN 'Saturday'
-  END AS DayOfWeek,
-  PRINTF(
-    '%.2f%%',
-    100.0 * SUM(EngagedFans) /
-    (SELECT SUM(EngagedFans) FROM Base)
-  ) AS PercentageSplit
-FROM Base
-GROUP BY WeekdayNum
-ORDER BY WeekdayNum;
-  </code></pre>
-
-  <h2>15. Split of EngagedFans by time ranges - Best time to publish?</h2>
-  <pre><code>WITH B AS (
-  SELECT
-    CASE
-      WHEN time(CreatedTime) BETWEEN '05:00:00' AND '08:59:59'
-        THEN '05:00 - 08:59'
-      WHEN time(CreatedTime) BETWEEN '09:00:00' AND '11:59:59'
-        THEN '09:00 - 11:59'
-      WHEN time(CreatedTime) BETWEEN '12:00:00' AND '14:59:59'
-        THEN '12:00 - 14:59'
-      WHEN time(CreatedTime) BETWEEN '15:00:00' AND '18:59:59'
-        THEN '15:00 - 18:59'
-      WHEN time(CreatedTime) BETWEEN '19:00:00' AND '21:59:59'
-        THEN '19:00 - 21:59'
-      ELSE '22:00 or later'
-    END AS TimeRange,
-    EngagedFans
-  FROM PostInsights
+<span class="keyword">SELECT</span> TimeRange,
+       100.0 * <span class="function">SUM</span>(EngagedFans) / 
+           (<span class="keyword">SELECT</span> <span class="function">SUM</span>(EngagedFans) <span class="keyword">FROM</span> B) <span class="keyword">AS</span> Percentage
+<span class="keyword">FROM</span> B
+<span class="keyword">GROUP BY</span> TimeRange
+<span class="keyword">ORDER BY</span> TimeRange;</code></div>
+                <div class="result-box">
+                    <div class="result-label">Result:</div>
+                    <div class="result-value">Engagement percentage by time of day</div>
+                </div>
+                <div class="screenshot-container">
+                    <div class="screenshot-label">📸 Question 15 - SQLiteStudio Screenshot</div>
+                    <img src="images/image15.png" alt="Q15 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image15.png in the images folder</div>'">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 6 -->
+        <div class="section" id="section6">
+            <h2 class="section-header">Section 6: Advanced Analysis</h2>
+            
+            <div class="query-card">
+                <h3 class="query-title">Q16: Month-to-Month Change in Engagement</h3>
+                <p class="query-description">Percentage changes in PostClicks, EngagedFans, and Reach month-over-month</p>
+                <div class="code-block"><code><span class="keyword">WITH</span> Monthly <span class="keyword">AS</span> (
+    <span class="keyword">SELECT</span>
+        <span class="function">strftime</span>(<span class="string">'%Y-%m'</span>, CreatedTime) <span class="keyword">AS</span> Month,
+        <span class="function">SUM</span>(PostClicks) <span class="keyword">AS</span> PostClicks,
+        <span class="function">SUM</span>(EngagedFans) <span class="keyword">AS</span> EngagedFans,
+        <span class="function">SUM</span>(Reach) <span class="keyword">AS</span> Reach
+    <span class="keyword">FROM</span> PostInsights
+    <span class="keyword">GROUP BY</span> <span class="function">strftime</span>(<span class="string">'%Y-%m'</span>, CreatedTime)
 )
-SELECT
-  TimeRange,
-  PRINTF(
-    '%.2f%%',
-    100.0 * SUM(EngagedFans) /
-    (SELECT SUM(EngagedFans) FROM B)
-  ) AS Percentage
-FROM B
-GROUP BY TimeRange
-ORDER BY TimeRange;
-  </code></pre>
-
-  <h2>16. Percentage changes in PostClicks, EngagedFans, and Reach month-over-month</h2>
-  <pre><code>WITH Monthly AS (
-  SELECT
-    strftime('%Y-%m', CreatedTime) AS Month,
-    SUM(PostClicks) AS PostClicks,
-    SUM(EngagedFans) AS EngagedFans,
-    SUM(Reach) AS Reach
-  FROM PostInsights
-  GROUP BY strftime('%Y-%m', CreatedTime)
-)
-SELECT
-  m1.Month AS FromMonth,
-  m2.Month AS ToMonth,
-  ROUND(
-    100.0 * (m2.PostClicks - m1.PostClicks) / m1.PostClicks,
-    2
-  ) AS DeltaPostClicks,
-  ROUND(
-    100.0 * (m2.EngagedFans - m1.EngagedFans) / m1.EngagedFans,
-    2
-  ) AS DeltaEngagedFans,
-  ROUND(
-    100.0 * (m2.Reach - m1.Reach) / m1.Reach,
-    2
-  ) AS DeltaReach
-FROM Monthly m1
-JOIN Monthly m2
-  ON m2.Month = (
-    SELECT MIN(Month)
-    FROM Monthly
-    WHERE Month &gt; m1.Month
-  )
-ORDER BY FromMonth;
-  </code></pre>
-</body>
-</html>
+<span class="keyword">SELECT</span>
+    m1.Month <span class="keyword">AS</span> FromMonth,
+    m2.Month <span class="keyword">AS</span> ToMonth,
+    100.0 * (m2.PostClicks - m1.PostClicks) / m1.PostClicks 
+        <span class="keyword">AS</span> DeltaPostClicks,
+    100.0 * (m2.EngagedFans - m1.EngagedFans) / m1.EngagedFans 
+        <span class="keyword">AS</span> DeltaEngagedFans,
+    100.0 * (m2.Reach - m1.Reach) / m1.Reach <span class="keyword">AS</span> DeltaReach
+<span class="keyword">FROM</span> Monthly m1
+<span class="keyword">JOIN</span> Monthly m2
+    <span class="keyword">ON</span> m2.Month = (
+        <span class="keyword">SELECT</span> <span class="function">MIN</span>(Month)
+        <span class="keyword">FROM</span> Monthly
+        <span class="keyword">WHERE</span> Month > m1.Month
+    )
+<span class="keyword">ORDER BY</span> FromMonth;</code></div>
+                <div class="result-box">
+                    <div class="result-label">Result:</div>
+                    <div class="result-value">Month-over-month percentage changes in engagement metrics</div>
+                </div>
+                <div class="screenshot-container">
+                    <div class="screenshot-label">📸 Question 16 - SQLiteStudio Screenshot</div>
+                    <img src="images/image16.png" alt="Q16 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image16.png in the images folder</div>'">
+                </div>
+            </div>
