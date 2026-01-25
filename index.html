@@ -130,9 +130,45 @@
         }
         
         .screenshot-container img {
-            width: 100%;
+            width: 60%;
             height: auto;
             display: block;
+            transition: all 0.3s ease;
+            margin: 0 auto;
+        }
+        
+        .screenshot-container img:hover {
+            transform: scale(1.02);
+            cursor: zoom-in;
+        }
+        
+        .image-size-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
+        .image-size-control label {
+            font-size: 0.85em;
+            color: #667eea;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .image-size-control input[type="range"] {
+            flex: 1;
+            min-width: 100px;
+        }
+        
+        .image-size-control .size-value {
+            color: #667eea;
+            font-weight: 600;
+            min-width: 45px;
+            font-size: 0.9em;
         }
         
         .screenshot-label {
@@ -200,6 +236,18 @@
                 element.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         }
+        
+        function updateSingleImageSize(imgId, value, sizeId) {
+            const img = document.getElementById(imgId);
+            const sizeDisplay = document.getElementById(sizeId);
+            
+            if (img) {
+                img.style.width = value + '%';
+            }
+            if (sizeDisplay) {
+                sizeDisplay.textContent = value + '%';
+            }
+        }
     </script>
     <div class="container">
         <header>
@@ -231,7 +279,12 @@
                 </div>
                 <div class="screenshot-container">
                     <div class="screenshot-label">📸 Question 1 - SQLiteStudio Screenshot</div>
-                    <img src="/images/image1.png" alt="Q1 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image1.png in the images folder</div>'">
+                    <img src="images/image1.png" alt="Q1 Screenshot" id="img1" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image1.png in the images folder</div>'">
+                    <div class="image-size-control">
+                        <label>Size:</label>
+                        <input type="range" min="30" max="100" value="60" oninput="updateSingleImageSize('img1', this.value, 'size1')">
+                        <span class="size-value" id="size1">60%</span>
+                    </div>
                 </div>
             </div>
             
@@ -246,7 +299,12 @@
                 </div>
                 <div class="screenshot-container">
                     <div class="screenshot-label">📸 Question 2 - SQLiteStudio Screenshot</div>
-                    <img src="images/image2.png" alt="Q2 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image2.png in the images folder</div>'">
+                    <img src="images/image2.png" alt="Q2 Screenshot" id="img2" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image2.png in the images folder</div>'">
+                    <div class="image-size-control">
+                        <label>Size:</label>
+                        <input type="range" min="30" max="100" value="60" oninput="updateSingleImageSize('img2', this.value, 'size2')">
+                        <span class="size-value" id="size2">60%</span>
+                    </div>
                 </div>
             </div>
             
@@ -261,7 +319,12 @@
                 </div>
                 <div class="screenshot-container">
                     <div class="screenshot-label">📸 Question 3 - SQLiteStudio Screenshot</div>
-                    <img src="images/image3.png" alt="Q3 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image3.png in the images folder</div>'">
+                    <img src="images/image3.png" alt="Q3 Screenshot" id="img3" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image3.png in the images folder</div>'">
+                    <div class="image-size-control">
+                        <label>Size:</label>
+                        <input type="range" min="30" max="100" value="60" oninput="updateSingleImageSize('img3', this.value, 'size3')">
+                        <span class="size-value" id="size3">60%</span>
+                    </div>
                 </div>
             </div>
             
@@ -276,7 +339,12 @@
                 </div>
                 <div class="screenshot-container">
                     <div class="screenshot-label">📸 Question 4 - SQLiteStudio Screenshot</div>
-                    <img src="images/image4.png" alt="Q4 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image4.png in the images folder</div>'">
+                    <img src="images/image4.png" alt="Q4 Screenshot" id="img4" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image4.png in the images folder</div>'">
+                    <div class="image-size-control">
+                        <label>Size:</label>
+                        <input type="range" min="30" max="100" value="60" oninput="updateSingleImageSize('img4', this.value, 'size4')">
+                        <span class="size-value" id="size4">60%</span>
+                    </div>
                 </div>
             </div>
             
@@ -291,7 +359,12 @@
                 </div>
                 <div class="screenshot-container">
                     <div class="screenshot-label">📸 Question 5 - SQLiteStudio Screenshot</div>
-                    <img src="images/image5.png" alt="Q5 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image5.png in the images folder</div>'">
+                    <img src="images/image5.png" alt="Q5 Screenshot" id="img5" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image5.png in the images folder</div>'">
+                    <div class="image-size-control">
+                        <label>Size:</label>
+                        <input type="range" min="30" max="100" value="60" oninput="updateSingleImageSize('img5', this.value, 'size5')">
+                        <span class="size-value" id="size5">60%</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -318,7 +391,12 @@
                 </div>
                 <div class="screenshot-container">
                     <div class="screenshot-label">📸 Question 6 - SQLiteStudio Screenshot</div>
-                    <img src="images/image6.png" alt="Q6 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image6.png in the images folder</div>'">
+                    <img src="images/image6.png" alt="Q6 Screenshot" id="img6" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image6.png in the images folder</div>'">
+                    <div class="image-size-control">
+                        <label>Size:</label>
+                        <input type="range" min="30" max="100" value="60" oninput="updateSingleImageSize('img6', this.value, 'size6')">
+                        <span class="size-value" id="size6">60%</span>
+                    </div>
                 </div>
             </div>
             
@@ -341,7 +419,12 @@
                 </div>
                 <div class="screenshot-container">
                     <div class="screenshot-label">📸 Question 7 - SQLiteStudio Screenshot</div>
-                    <img src="images/image7.png" alt="Q7 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image7.png in the images folder</div>'">
+                    <img src="images/image7.png" alt="Q7 Screenshot" id="img7" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image7.png in the images folder</div>'">
+                    <div class="image-size-control">
+                        <label>Size:</label>
+                        <input type="range" min="30" max="100" value="60" oninput="updateSingleImageSize('img7', this.value, 'size7')">
+                        <span class="size-value" id="size7">60%</span>
+                    </div>
                 </div>
             </div>
             
@@ -365,7 +448,12 @@
                 </div>
                 <div class="screenshot-container">
                     <div class="screenshot-label">📸 Question 8 - SQLiteStudio Screenshot</div>
-                    <img src="images/image8.png" alt="Q8 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image8.png in the images folder</div>'">
+                    <img src="images/image8.png" alt="Q8 Screenshot" id="img8" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image8.png in the images folder</div>'">
+                    <div class="image-size-control">
+                        <label>Size:</label>
+                        <input type="range" min="30" max="100" value="60" oninput="updateSingleImageSize('img8', this.value, 'size8')">
+                        <span class="size-value" id="size8">60%</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -394,7 +482,12 @@
                 </div>
                 <div class="screenshot-container">
                     <div class="screenshot-label">📸 Question 9 - SQLiteStudio Screenshot</div>
-                    <img src="images/image9.png" alt="Q9 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image9.png in the images folder</div>'">
+                    <img src="images/image9.png" alt="Q9 Screenshot" id="img9" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image9.png in the images folder</div>'">
+                    <div class="image-size-control">
+                        <label>Size:</label>
+                        <input type="range" min="30" max="100" value="60" oninput="updateSingleImageSize('img9', this.value, 'size9')">
+                        <span class="size-value" id="size9">60%</span>
+                    </div>
                 </div>
             </div>
             
@@ -418,7 +511,12 @@
                 </div>
                 <div class="screenshot-container">
                     <div class="screenshot-label">📸 Question 10 - SQLiteStudio Screenshot</div>
-                    <img src="images/image10.png" alt="Q10 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image10.png in the images folder</div>'">
+                    <img src="images/image10.png" alt="Q10 Screenshot" id="img10" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image10.png in the images folder</div>'">
+                    <div class="image-size-control">
+                        <label>Size:</label>
+                        <input type="range" min="30" max="100" value="60" oninput="updateSingleImageSize('img10', this.value, 'size10')">
+                        <span class="size-value" id="size10">60%</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -440,7 +538,12 @@
                 </div>
                 <div class="screenshot-container">
                     <div class="screenshot-label">📸 Question 11 - SQLiteStudio Screenshot</div>
-                    <img src="images/image11.png" alt="Q11 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image11.png in the images folder</div>'">
+                    <img src="images/image11.png" alt="Q11 Screenshot" id="img11" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image11.png in the images folder</div>'">
+                    <div class="image-size-control">
+                        <label>Size:</label>
+                        <input type="range" min="30" max="100" value="60" oninput="updateSingleImageSize('img11', this.value, 'size11')">
+                        <span class="size-value" id="size11">60%</span>
+                    </div>
                 </div>
             </div>
             
@@ -463,7 +566,12 @@
                 </div>
                 <div class="screenshot-container">
                     <div class="screenshot-label">📸 Question 12 - SQLiteStudio Screenshot</div>
-                    <img src="images/image12.png" alt="Q12 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image12.png in the images folder</div>'">
+                    <img src="images/image12.png" alt="Q12 Screenshot" id="img12" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image12.png in the images folder</div>'">
+                    <div class="image-size-control">
+                        <label>Size:</label>
+                        <input type="range" min="30" max="100" value="60" oninput="updateSingleImageSize('img12', this.value, 'size12')">
+                        <span class="size-value" id="size12">60%</span>
+                    </div>
                 </div>
             </div>
             
@@ -494,7 +602,12 @@
                 </div>
                 <div class="screenshot-container">
                     <div class="screenshot-label">📸 Question 13 - SQLiteStudio Screenshot</div>
-                    <img src="images/image13.png" alt="Q13 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image13.png in the images folder</div>'">
+                    <img src="images/image13.png" alt="Q13 Screenshot" id="img13" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image13.png in the images folder</div>'">
+                    <div class="image-size-control">
+                        <label>Size:</label>
+                        <input type="range" min="30" max="100" value="60" oninput="updateSingleImageSize('img13', this.value, 'size13')">
+                        <span class="size-value" id="size13">60%</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -531,7 +644,12 @@
                 </div>
                 <div class="screenshot-container">
                     <div class="screenshot-label">📸 Question 14 - SQLiteStudio Screenshot</div>
-                    <img src="images/image14.png" alt="Q14 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image14.png in the images folder</div>'">
+                    <img src="images/image14.png" alt="Q14 Screenshot" id="img14" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image14.png in the images folder</div>'">
+                    <div class="image-size-control">
+                        <label>Size:</label>
+                        <input type="range" min="30" max="100" value="60" oninput="updateSingleImageSize('img14', this.value, 'size14')">
+                        <span class="size-value" id="size14">60%</span>
+                    </div>
                 </div>
             </div>
             
@@ -567,7 +685,12 @@
                 </div>
                 <div class="screenshot-container">
                     <div class="screenshot-label">📸 Question 15 - SQLiteStudio Screenshot</div>
-                    <img src="images/image15.png" alt="Q15 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image15.png in the images folder</div>'">
+                    <img src="images/image15.png" alt="Q15 Screenshot" id="img15" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image15.png in the images folder</div>'">
+                    <div class="image-size-control">
+                        <label>Size:</label>
+                        <input type="range" min="30" max="100" value="60" oninput="updateSingleImageSize('img15', this.value, 'size15')">
+                        <span class="size-value" id="size15">60%</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -610,7 +733,11 @@
                 </div>
                 <div class="screenshot-container">
                     <div class="screenshot-label">📸 Question 16 - SQLiteStudio Screenshot</div>
-                    <img src="images/image16.png" alt="Q16 Screenshot" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image16.png in the images folder</div>'">
+                    <img src="images/image16.png" alt="Q16 Screenshot" id="img16" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:#666;background:#f5f5f5;\'>📁 Place image16.png in the images folder</div>'">
+                    <div class="image-size-control">
+                        <label>Size:</label>
+                        <input type="range" min="30" max="100" value="60" oninput="updateSingleImageSize('img16', this.value, 'size16')">
+                        <span class="size-value" id="size16">60%</span>
+                    </div>
                 </div>
             </div>
-
