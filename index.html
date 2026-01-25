@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SQL Showcase</title>
+</head>
+<body>
+  <h1>SQL Business Questions Showcase</h1>
+
+  <h2>1. How many unique countries are there?</h2>
+  <pre><code>SELECT COUNT(DISTINCT CountryName)
+FROM PopStats;
+  </code></pre>
+
+  <h2>2. How many unique cities are there?</h2>
+  <pre><code>SELECT COUNT(DISTINCT City)
+FROM FansPerCity;
+  </code></pre>
+
+  <h2>3. How many unique languages are there?</h2>
+  <pre><code>SELECT COUNT(DISTINCT Language)
+FROM FansPerLanguage;
+  </code></pre>
+
+  <h2>4. What is the daily average reach of the posts on the global page?</h2>
+  <pre><code>SELECT AVG(DailyPostReach)
+FROM GlobalPage;
+  </code></pre>
+
+  <h2>5. What is the daily average engagement rate (NewLikes) on the global page?</h2>
+  <pre><code>SELECT
+  ROUND(AVG(NewLikes), 2) AS AvgNewLikes
+FROM GlobalPage;
+  </code></pre>
+
+  <h2>6. What are the top 10 countries considering the number of fans?</h2>
+  <pre><code>SELECT
+  f.CountryCode,
+  p.CountryName,
+  f.NumberOfFans
+FROM FansPerCountry AS f
+LEFT JOIN PopStats AS p
+  ON f.CountryCode = p.CountryCode
+WHERE f.DateISO = (SELECT MAX(DateISO) FROM FansPerCountry)
+ORDER BY f.NumberOfFans DESC
+LIMIT 10;
+  </code></pre>
+
+  <h2>7. What are the top 10 countries by penetration ratio (% of population that are fans)?</h2>
+  <pre><code>SELECT
+  p.CountryName,
+  ROUND(
+    100.0 * f.NumberOfFans / p.Population,
+    2
+  ) AS PenetrationRatio,
+  f.NumberOfFans,
+  p.Population
+FROM FansPerCountry AS f
+JOIN PopStats AS p
+  ON f.CountryCode = p.CountryCode
+WHERE f.DateISO = (SELECT MAX(DateISO) FROM FansPerCountry)
+ORDER BY PenetrationRatio DESC
+LIMIT 10;
+  </code></pre>
+
+  <h2>8. Bottom 10 cities by fans among countries with population over 20 million</h2>
+  <pre><code>SELECT
+  p.CountryName,
+  c.City,
+  c.NumberOfFans,
+  p.Population
+FROM FansPerCity AS c
+JOIN PopStats AS p
+  ON c.CountryCode = p.CountryCode
+WHERE c.DateISO = (SELECT MAX(DateISO) FROM FansPerCity)
+  AND p.Population &gt; 20000000
+ORDER BY c.NumberOfFans ASC
+LIMIT 10;
+  </code></pre>
+
+  <h2>9. What is the split of page fans across age groups (in %)?</h2>
+  <pre><code>WITH Latest AS (
+  SELECT *
+  FROM FansPerGenderAge
+  WHERE Date = (SELECT MAX(Date) FROM FansPerGenderAge)
+)
+SELECT
+  AgeGroup,
+  ROUND(
+    100.0 * SUM(NumberOfFans) /
+    (SELECT SUM(NumberOfFans) FROM Latest),
+    2
+  ) AS PercentageOfFans
+FROM Latest
+GROUP BY AgeGroup
+ORDER BY AgeGroup;
+  </code></pre>
+
+  <h2>10. What is the split of page fans by gender (in %)?</h2>
+  <pre><code>WITH Latest AS (
+  SELECT *
+  FROM FansPerGenderAge
+  WHERE DateISO = (SELECT MAX(DateISO) FROM FansPerGenderAge)
+)
+SELECT
+  Gender,
+  FORMAT(
+    '%0.2f%%',
+    100.0 * SUM(NumberOfFans) /
+    (SELECT SUM(NumberOfFans) FROM Latest)
+  ) AS PercentageOfFans
+FROM Latest
+GROUP BY Gender
+ORDER BY Gender;
+  </code></pre>
+
+  <h2>11. Number of fans with English as primary language</h2>
+  <pre><code>SELECT SUM(NumberOfFans) AS EnglishSpeakingFans
+FROM FansPerLanguage
+WHERE Language = 'en'
+  AND DateISO = (SELECT MAX(DateISO) FROM FansPerLanguage);
+  </code></pre>
+
+  <h2>12. Percentage of fans with English as primary language</h2>
+  <pre><code>WITH Latest AS (
+  SELECT *
+  FROM FansPerLanguage
+  WHERE DateISO = (SELECT MAX(DateISO) FROM FansPerLanguage)
+)
+SELECT
+  SUM(CASE WHEN Language = 'en' THEN NumberOfFans END) AS EnglishFans,
+  FORMAT(
+    '%.2f%%',
+    100.0 * SUM(CASE WHEN Language = 'en' THEN NumberOfFans END)
+    / SUM(NumberOfFans)
+  ) AS EnglishFansPercentage
+FROM Latest;
+  </code></pre>
+
+  <h2>13. Potential buying power based on US English-speaking fans (0.01% of income for subscriptions)</h2>
+  <pre><code>WITH Latest AS (
+  SELECT *
+  FROM FansPerLanguage
+  WHERE DateISO = (SELECT MAX(DateISO) FROM FansPerLanguage)
+)
+SELECT
+  SUM(
+    CASE
+      WHEN l.Language = 'en' AND l.CountryCode = 'US'
+      THEN l.NumberOfFans
+    END
+  ) AS EnglishFansUS,
+  p.AverageIncome,
+  ROUND(
+    SUM(
+      CASE
+        WHEN l.Language = 'en' AND l.CountryCode = 'US'
+        THEN l.NumberOfFans
+      END
+    ) * p.AverageIncome * 0.0001,
+    2
+  ) AS PotentialBuyingPower
+FROM Latest AS l
+JOIN PopStats AS p
+  ON p.CountryCode = 'US';
+  </code></pre>
+
+  <h2>14. Split of EngagedFans across days of the week - Best day to publish?</h2>
+  <pre><code>WITH Base AS (
+  SELECT
+    strftime('%w', CreatedTime) AS WeekdayNum,
+    EngagedFans
+  FROM PostInsights
+)
+SELECT
+  CASE WeekdayNum
+    WHEN '0' THEN 'Sunday'
+    WHEN '1' THEN 'Monday'
+    WHEN '2' THEN 'Tuesday'
+    WHEN '3' THEN 'Wednesday'
+    WHEN '4' THEN 'Thursday'
+    WHEN '5' THEN 'Friday'
+    WHEN '6' THEN 'Saturday'
+  END AS DayOfWeek,
+  PRINTF(
+    '%.2f%%',
+    100.0 * SUM(EngagedFans) /
+    (SELECT SUM(EngagedFans) FROM Base)
+  ) AS PercentageSplit
+FROM Base
+GROUP BY WeekdayNum
+ORDER BY WeekdayNum;
+  </code></pre>
+
+  <h2>15. Split of EngagedFans by time ranges - Best time to publish?</h2>
+  <pre><code>WITH B AS (
+  SELECT
+    CASE
+      WHEN time(CreatedTime) BETWEEN '05:00:00' AND '08:59:59'
+        THEN '05:00 - 08:59'
+      WHEN time(CreatedTime) BETWEEN '09:00:00' AND '11:59:59'
+        THEN '09:00 - 11:59'
+      WHEN time(CreatedTime) BETWEEN '12:00:00' AND '14:59:59'
+        THEN '12:00 - 14:59'
+      WHEN time(CreatedTime) BETWEEN '15:00:00' AND '18:59:59'
+        THEN '15:00 - 18:59'
+      WHEN time(CreatedTime) BETWEEN '19:00:00' AND '21:59:59'
+        THEN '19:00 - 21:59'
+      ELSE '22:00 or later'
+    END AS TimeRange,
+    EngagedFans
+  FROM PostInsights
+)
+SELECT
+  TimeRange,
+  PRINTF(
+    '%.2f%%',
+    100.0 * SUM(EngagedFans) /
+    (SELECT SUM(EngagedFans) FROM B)
+  ) AS Percentage
+FROM B
+GROUP BY TimeRange
+ORDER BY TimeRange;
+  </code></pre>
+
+  <h2>16. Percentage changes in PostClicks, EngagedFans, and Reach month-over-month</h2>
+  <pre><code>WITH Monthly AS (
+  SELECT
+    strftime('%Y-%m', CreatedTime) AS Month,
+    SUM(PostClicks) AS PostClicks,
+    SUM(EngagedFans) AS EngagedFans,
+    SUM(Reach) AS Reach
+  FROM PostInsights
+  GROUP BY strftime('%Y-%m', CreatedTime)
+)
+SELECT
+  m1.Month AS FromMonth,
+  m2.Month AS ToMonth,
+  ROUND(
+    100.0 * (m2.PostClicks - m1.PostClicks) / m1.PostClicks,
+    2
+  ) AS DeltaPostClicks,
+  ROUND(
+    100.0 * (m2.EngagedFans - m1.EngagedFans) / m1.EngagedFans,
+    2
+  ) AS DeltaEngagedFans,
+  ROUND(
+    100.0 * (m2.Reach - m1.Reach) / m1.Reach,
+    2
+  ) AS DeltaReach
+FROM Monthly m1
+JOIN Monthly m2
+  ON m2.Month = (
+    SELECT MIN(Month)
+    FROM Monthly
+    WHERE Month &gt; m1.Month
+  )
+ORDER BY FromMonth;
+  </code></pre>
+</body>
+</html>
