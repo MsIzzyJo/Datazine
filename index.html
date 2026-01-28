@@ -331,8 +331,17 @@
             <div class="query-card">
                 <h3 class="query-title">Q4: Global Page Reach</h3>
                 <p class="query-description">What is the daily average reach of the posts on the global page?</p>
-                <div class="code-block"><code><span class="keyword">SELECT</span> <span class="function">AVG</span>(DailyPostReach)
-<span class="keyword">FROM</span> GlobalPage;</code></div>
+                <div class="code-block">
+  <code>
+    <span class="keyword">SELECT</span>
+    <span class="function">ROUND</span>(
+      <span class="function">AVG</span>(DailyPostReach),
+      2
+    ) <span class="keyword">AS</span> AvgDailyPostReach<br>
+    <span class="keyword">FROM</span> GlobalPage;
+  </code>
+</div>
+
                 <div class="result-box">
                     <div class="result-label">Result:</div>
                     <div class="result-value">1,862,816.03 average daily reach</div>
@@ -351,8 +360,16 @@
             <div class="query-card">
                 <h3 class="query-title">Q5: Global Page Likes</h3>
                 <p class="query-description">What is the daily average engagement rate (NewLikes) on the global page?</p>
-                <div class="code-block"><code><span class="keyword">SELECT</span> <span class="function">AVG</span>(NewLikes)
-<span class="keyword">FROM</span> GlobalPage;</code></div>
+                <div class="code-block">
+  <code>
+    <span class="keyword">SELECT</span><br>
+    &nbsp;&nbsp;<span class="function">ROUND</span>(
+    <span class="function">AVG</span>(NewLikes), 2
+    ) <span class="keyword">AS</span> AvgNewLikes<br>
+    <span class="keyword">FROM</span> GlobalPage;
+  </code>
+</div>
+
                 <div class="result-box">
                     <div class="result-label">Result:</div>
                     <div class="result-value">8,942.56 average new likes per day</div>
@@ -403,16 +420,25 @@
             <div class="query-card">
                 <h3 class="query-title">Q7: Top 10 Countries by Penetration Ratio</h3>
                 <p class="query-description">What are the top 10 countries by penetration ratio (% of population that are fans)?</p>
-                <div class="code-block"><code><span class="keyword">SELECT</span> p.CountryName,
-       1.0 * f.NumberOfFans / p.Population <span class="keyword">AS</span> PenetrationRatio,
-       f.NumberOfFans,
-       p.Population
-<span class="keyword">FROM</span> FansPerCountry f
-<span class="keyword">JOIN</span> PopStats p
-    <span class="keyword">ON</span> f.CountryCode = p.CountryCode
-<span class="keyword">WHERE</span> f.Date = (<span class="keyword">SELECT</span> <span class="function">MAX</span>(Date) <span class="keyword">FROM</span> FansPerCountry)
-<span class="keyword">ORDER BY</span> PenetrationRatio <span class="keyword">DESC</span>
-<span class="keyword">LIMIT</span> 10;</code></div>
+      <div class="code-block">
+  <code>
+    <span class="keyword">SELECT</span><br>
+    &nbsp;&nbsp;p.CountryName,<br>
+    &nbsp;&nbsp;<span class="function">ROUND</span>(<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;100.0 * f.NumberOfFans / p.Population,<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;2<br>
+    &nbsp;&nbsp;) <span class="keyword">AS</span> PenetrationRatio,<br>
+    &nbsp;&nbsp;f.NumberOfFans,<br>
+    &nbsp;&nbsp;p.Population<br>
+    <span class="keyword">FROM</span> FansPerCountry <span class="keyword">AS</span> f<br>
+    <span class="keyword">JOIN</span> PopStats <span class="keyword">AS</span> p<br>
+    <span class="keyword">ON</span> f.CountryCode = p.CountryCode<br>
+    <span class="keyword">WHERE</span> f.Date = (<span class="keyword">SELECT</span> <span class="function">MAX</span>(Date) <span class="keyword">FROM</span> FansPerCountry)<br>
+    <span class="keyword">ORDER BY</span> PenetrationRatio <span class="keyword">DESC</span><br>
+    <span class="keyword">LIMIT</span> 10;
+  </code>
+</div>
+
                 <div class="result-box">
                     <div class="result-label">Result:</div>
                     <div class="result-value">Top 10 countries by fan penetration percentage</div>
@@ -741,3 +767,4 @@
                     </div>
                 </div>
             </div>
+
