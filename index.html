@@ -452,7 +452,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;p.CountryName,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;f.NumberOfFans<br>
 <span class="keyword">FROM</span> FansPerCountry <span class="keyword">AS</span> f<br>
-<span class="keyword">LEFT JOIN</span> PopStats p<br>
+<span class="keyword">LEFT JOIN</span> PopStats <span class="keyword">AS</span> p<br>
 &nbsp;&nbsp;<span class="keyword">ON</span> f.CountryCode = p.CountryCode<br>
 <span class="keyword">WHERE</span> f.Date = (<span class="keyword">SELECT</span> <span class="function">MAX</span>(Date) <span class="keyword">FROM</span> FansPerCountry)<br>
 <span class="keyword">ORDER BY</span> f.NumberOfFans <span class="keyword">DESC</span><br>
@@ -490,18 +490,21 @@
           What are the top 10 countries by penetration ratio (% of population that are fans)?
         </p>
         <div class="code-block">
-          <code>
+<code>
 <span class="keyword">SELECT</span> p.CountryName,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;1.0 * f.NumberOfFans / p.Population <span class="keyword">AS</span> PenetrationRatio,<br>
+<span class="function">ROUND</span>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;100.0 * f.NumberOfFans / p.Population,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2<br>
+) <span class="keyword">AS</span> PenetrationRatio,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;f.NumberOfFans,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;p.Population<br>
-<span class="keyword">FROM</span> FansPerCountry f<br>
-<span class="keyword">JOIN</span> PopStats p<br>
+<span class="keyword">FROM</span> FansPerCountry <span class="keyword">AS</span> f<br>
+<span class="keyword">JOIN</span> PopStats <span class="keyword">AS</span> p<br>
 &nbsp;&nbsp;<span class="keyword">ON</span> f.CountryCode = p.CountryCode<br>
 <span class="keyword">WHERE</span> f.Date = (<span class="keyword">SELECT</span> <span class="function">MAX</span>(Date) <span class="keyword">FROM</span> FansPerCountry)<br>
 <span class="keyword">ORDER BY</span> PenetrationRatio <span class="keyword">DESC</span><br>
 <span class="keyword">LIMIT</span> 10;
-          </code>
+</code>
         </div>
         <div class="result-box">
           <div class="result-label">Result</div>
@@ -717,18 +720,22 @@
         <h3 class="query-title">Q12: English Speaking Fans Percentage</h3>
         <p class="query-description">Percentage of fans with English as primary language.</p>
         <div class="code-block">
-          <code>
+<code>
 <span class="keyword">WITH</span> Latest <span class="keyword">AS</span> (<br>
 &nbsp;&nbsp;<span class="keyword">SELECT</span> *<br>
 &nbsp;&nbsp;<span class="keyword">FROM</span> FansPerLanguage<br>
 &nbsp;&nbsp;<span class="keyword">WHERE</span> Date = (<span class="keyword">SELECT</span> <span class="function">MAX</span>(Date) <span class="keyword">FROM</span> FansPerLanguage)<br>
 )<br>
 <span class="keyword">SELECT</span><br>
-&nbsp;&nbsp;<span class="function">SUM</span>(<span class="keyword">CASE</span> <span class="keyword">WHEN</span> Language = <span class="string">'en'</span> <span class="keyword">THEN</span> NumberOfFans <span class="keyword">END</span>) <span class="keyword">AS</span> EnglishFans,<br>
-&nbsp;&nbsp;100.0 * <span class="function">SUM</span>(<span class="keyword">CASE</span> <span class="keyword">WHEN</span> Language = <span class="string">'en'</span> <span class="keyword">THEN</span> NumberOfFans <span class="keyword">END</span>) /<br>
-&nbsp;&nbsp;<span class="function">SUM</span>(NumberOfFans) <span class="keyword">AS</span> EnglishFansPercentage<br>
+&nbsp;&nbsp;<span class="function">SUM</span>(<span class="keyword">CASE WHEN</span> Language = <span class="string">'en'</span> <span class="keyword">THEN</span> NumberOfFans <span class="keyword">END</span>) <span class="keyword">AS</span> EnglishFans,<br>
+&nbsp;&nbsp;<span class="function">FORMAT</span>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">'%.2f%%'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;100.0 * <span class="function">SUM</span>(<span class="keyword">CASE WHEN</span> Language = <span class="string">'en'</span> <span class="keyword">THEN</span> NumberOfFans <span class="keyword">END</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;/ <span class="function">SUM</span>(NumberOfFans)<br>
+&nbsp;&nbsp;) <span class="keyword">AS</span> EnglishFansPercentage<br>
 <span class="keyword">FROM</span> Latest;
-          </code>
+</code>
+
         </div>
         <div class="result-box">
           <div class="result-label">Result</div>
@@ -761,7 +768,7 @@
           Potential buying power based on US English-speaking fans (0.01 of income for subscriptions).
         </p>
         <div class="code-block">
-          <code>
+<code>
 <span class="keyword">WITH</span> Latest <span class="keyword">AS</span> (<br>
 &nbsp;&nbsp;<span class="keyword">SELECT</span> *<br>
 &nbsp;&nbsp;<span class="keyword">FROM</span> FansPerLanguage<br>
@@ -775,16 +782,20 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">END</span><br>
 &nbsp;&nbsp;) <span class="keyword">AS</span> EnglishFansUS,<br>
 &nbsp;&nbsp;p.AverageIncome,<br>
-&nbsp;&nbsp;<span class="function">SUM</span>(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">CASE</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">WHEN</span> l.Language = <span class="string">'en'</span> <span class="keyword">AND</span> l.CountryCode = <span class="string">'US'</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">THEN</span> l.NumberOfFans<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">END</span><br>
-&nbsp;&nbsp;) * p.AverageIncome * 0.0001 <span class="keyword">AS</span> PotentialBuyingPower<br>
+&nbsp;&nbsp;<span class="function">ROUND</span>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="function">SUM</span>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">CASE</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">WHEN</span> l.Language = <span class="string">'en'</span> <span class="keyword">AND</span> l.CountryCode = <span class="string">'US'</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">THEN</span> l.NumberOfFans<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">END</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;) * p.AverageIncome * 0.0001,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2<br>
+&nbsp;&nbsp;) <span class="keyword">AS</span> PotentialBuyingPower<br>
 <span class="keyword">FROM</span> Latest <span class="keyword">AS</span> l<br>
 <span class="keyword">JOIN</span> PopStats <span class="keyword">AS</span> p<br>
 &nbsp;&nbsp;<span class="keyword">ON</span> p.CountryCode = <span class="string">'US'</span>;
-          </code>
+</code>
+
         </div>
         <div class="result-box">
           <div class="result-label">Result</div>
@@ -823,28 +834,32 @@
           Split of EngagedFans across days of the week – Best day to publish?
         </p>
         <div class="code-block">
-          <code>
+<code>
 <span class="keyword">WITH</span> Base <span class="keyword">AS</span> (<br>
-&nbsp;&nbsp;<span class="keyword">SELECT</span> <span class="function">strftime</span>('%w', CreatedTime) <span class="keyword">AS</span> WeekdayNum,<br>
+&nbsp;&nbsp;<span class="keyword">SELECT</span> <span class="function">strftime</span>(<span class="string">'%w'</span>, CreatedTime) <span class="keyword">AS</span> WeekdayNum,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;EngagedFans<br>
 &nbsp;&nbsp;<span class="keyword">FROM</span> PostInsights<br>
 )<br>
 <span class="keyword">SELECT</span><br>
 &nbsp;&nbsp;<span class="keyword">CASE</span> WeekdayNum<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">WHEN</span> '0' <span class="keyword">THEN</span> 'Sunday'<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">WHEN</span> '1' <span class="keyword">THEN</span> 'Monday'<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">WHEN</span> '2' <span class="keyword">THEN</span> 'Tuesday'<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">WHEN</span> '3' <span class="keyword">THEN</span> 'Wednesday'<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">WHEN</span> '4' <span class="keyword">THEN</span> 'Thursday'<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">WHEN</span> '5' <span class="keyword">THEN</span> 'Friday'<br>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">WHEN</span> '6' <span class="keyword">THEN</span> 'Saturday'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">WHEN</span> <span class="string">'0'</span> <span class="keyword">THEN</span> <span class="string">'Sunday'</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">WHEN</span> <span class="string">'1'</span> <span class="keyword">THEN</span> <span class="string">'Monday'</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">WHEN</span> <span class="string">'2'</span> <span class="keyword">THEN</span> <span class="string">'Tuesday'</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">WHEN</span> <span class="string">'3'</span> <span class="keyword">THEN</span> <span class="string">'Wednesday'</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">WHEN</span> <span class="string">'4'</span> <span class="keyword">THEN</span> <span class="string">'Thursday'</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">WHEN</span> <span class="string">'5'</span> <span class="keyword">THEN</span> <span class="string">'Friday'</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">WHEN</span> <span class="string">'6'</span> <span class="keyword">THEN</span> <span class="string">'Saturday'</span><br>
 &nbsp;&nbsp;<span class="keyword">END</span> <span class="keyword">AS</span> DayOfWeek,<br>
-&nbsp;&nbsp;100.0 * <span class="function">SUM</span>(EngagedFans) /<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">SELECT</span> <span class="function">SUM</span>(EngagedFans) <span class="keyword">FROM</span> Base) <span class="keyword">AS</span> PercentageSplit<br>
+&nbsp;&nbsp;<span class="function">PRINTF</span>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">'%.2f%%'</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;100.0 * <span class="function">SUM</span>(EngagedFans) /<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keyword">SELECT</span> <span class="function">SUM</span>(EngagedFans) <span class="keyword">FROM</span> Base)<br>
+&nbsp;&nbsp;) <span class="keyword">AS</span> PercentageSplit<br>
 <span class="keyword">FROM</span> Base<br>
 <span class="keyword">GROUP BY</span> WeekdayNum<br>
 <span class="keyword">ORDER BY</span> WeekdayNum;
-          </code>
+</code>
+
         </div>
         <div class="result-box">
           <div class="result-label">Result</div>
@@ -938,7 +953,7 @@
                     Percentage changes in PostClicks, EngagedFans, and Reach month-over-month.
                 </p>
                <div class="code-block">
-  <code>
+<code>
 <span class="keyword">WITH</span> Monthly <span class="keyword">AS</span> (<br>
 &nbsp;&nbsp;<span class="keyword">SELECT</span><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="function">strftime</span>(<span class="string">'%Y-%m'</span>, CreatedTime) <span class="keyword">AS</span> Month,<br>
@@ -951,16 +966,24 @@
 <span class="keyword">SELECT</span><br>
 &nbsp;&nbsp;m1.Month <span class="keyword">AS</span> FromMonth,<br>
 &nbsp;&nbsp;m2.Month <span class="keyword">AS</span> ToMonth,<br>
-&nbsp;&nbsp;100.0 * (m2.PostClicks - m1.PostClicks) / m1.PostClicks <span class="keyword">AS</span> DeltaPostClicks,<br>
-&nbsp;&nbsp;100.0 * (m2.EngagedFans - m1.EngagedFans) / m1.EngagedFans <span class="keyword">AS</span> DeltaEngagedFans,<br>
-&nbsp;&nbsp;100.0 * (m2.Reach - m1.Reach) / m1.Reach <span class="keyword">AS</span> DeltaReach<br>
+&nbsp;&nbsp;<span class="function">ROUND</span>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;100.0 * (m2.PostClicks - m1.PostClicks) / m1.PostClicks,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2<br>
+&nbsp;&nbsp;) <span class="keyword">AS</span> DeltaPostClicks,<br>
+&nbsp;&nbsp;<span class="function">ROUND</span>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;100.0 * (m2.EngagedFans - m1.EngagedFans) / m1.EngagedFans,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2<br>
+&nbsp;&nbsp;) <span class="keyword">AS</span> DeltaEngagedFans,<br>
+&nbsp;&nbsp;<span class="function">ROUND</span>(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;100.0 * (m2.Reach - m1.Reach) / m1.Reach,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2<br>
+&nbsp;&nbsp;) <span class="keyword">AS</span> DeltaReach<br>
 <span class="keyword">FROM</span> Monthly m1<br>
 <span class="keyword">JOIN</span> Monthly m2<br>
 &nbsp;&nbsp;<span class="keyword">ON</span> m2.Month = (<span class="keyword">SELECT</span> <span class="function">MIN</span>(Month) <span class="keyword">FROM</span> Monthly <span class="keyword">WHERE</span> Month &gt; m1.Month)<br>
 <span class="keyword">ORDER BY</span> FromMonth;
-  </code>
+</code>
 </div>
-
                 <div class="result-box">
                     <div class="result-label">Result</div>
                     <div class="result-value">Month-over-month percentage changes in engagement metrics</div>
@@ -986,6 +1009,7 @@
                 </div>
             </div>
         </div>
+
 
 
 
