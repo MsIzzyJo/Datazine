@@ -451,7 +451,7 @@
 <span class="keyword">SELECT</span> f.CountryCode,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;p.CountryName,<br>
 &nbsp;&nbsp;&nbsp;&nbsp;f.NumberOfFans<br>
-<span class="keyword">FROM</span> FansPerCountry f<br>
+<span class="keyword">FROM</span> FansPerCountry <span class="keyword">AS</span> f<br>
 <span class="keyword">LEFT JOIN</span> PopStats p<br>
 &nbsp;&nbsp;<span class="keyword">ON</span> f.CountryCode = p.CountryCode<br>
 <span class="keyword">WHERE</span> f.Date = (<span class="keyword">SELECT</span> <span class="function">MAX</span>(Date) <span class="keyword">FROM</span> FansPerCountry)<br>
@@ -986,6 +986,7 @@
                 </div>
             </div>
         </div>
+
 
 
 
